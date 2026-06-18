@@ -83,6 +83,98 @@ public class BTS{
             return false;
         }
 
+        public static Node deleteNode(Node root, int val){
+            if(root == null){
+                return null;
+            }
+            if(root.data < val){
+                root.right = deleteNode(root.right, val);
+            }else if(root.data > val){
+                root.left = deleteNode(root.left, val);
+            }else{
+                //case 1 leafNode
+                if(root.left == null && root.right == null){
+                    return null;
+                }
+
+                //case 2 is root has any one child
+
+                if(root.left == null){
+                    return root.right;
+                }
+                if(root.right == null){
+                    return root.left;
+                }
+
+                //case 3 root has both childrens
+                Node IS = findInorderSuccessor(root.right);
+                root.data = IS.data;
+                root.right = deleteNode(root.right, IS.data);
+            }
+            return root;
+        }
+
+        public static Node findInorderSuccessor(Node root){
+            while(root.left != null){
+                root = root.left;
+            }
+            return root;
+        }
+
+        public static void printInRange(Node root, int k1,int k2){
+            if(root == null){
+                return;
+            }
+
+            if(root.data >= k1 && root.data <= k2){
+                printInRange(root.left, k1, k2);
+                System.out.print(root.data+" ");
+                printInRange(root.right, k1, k2);
+            }else if(root.data < k1){
+                printInRange(root.right, k1, k2);
+            }else{
+                printInRange(root.left, k1, k2);
+            }
+        }
+
+        public static boolean isValid(Node root, Node min, Node max){
+            if(root == null){
+                return true;
+            }
+
+            if(min != null && root.data <= min.data){
+                return false;
+            }
+            if(max != null && root.data >= max.data){
+                return false;
+            }
+
+            return isValid(root.left, min, max) && isValid(root.right, min, max);
+        }
+
+        public static Node Mirror(Node root){
+            if(root == null){
+                return null;
+            }
+
+            Node leftTree = Mirror(root.left);
+            root.left = Mirror(root.right);
+            root.right = leftTree;
+            return root;
+
+        }
+
+        public static void preorder(Node root){
+            if(root == null){
+                return;
+            }
+
+            System.out.print(root.data+" ");
+            preorder(root.left);
+            preorder(root.right);
+
+        }
+
     public static void main(String[] args) {
         int val[] = {5,1,3,4,2,7,10,9,8,11};
         Node root = null;
@@ -93,11 +185,20 @@ public class BTS{
 
         // inorder(root);
         // System.out.println();
-        // levelOrder(root);
+        // // levelOrder(root);
 
-        int key = 15;
+        // // int key = 15;        
+        // // System.out.println(isExist(root, key));
+
+        //  root = deleteNode(root, 10);
+        //  System.out.println();
+        //  inorder(root);
+
+        // printInRange(root, 3, 9);
+        // root = Mirror(root);
+        preorder(root);
+
         
-        System.out.println(isExist(root, key));
     }
 
 }
