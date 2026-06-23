@@ -175,17 +175,31 @@ public class BTS{
 
         }
 
+        public static Node createBST(int val[], int st, int end){
+            if(st > end){
+                return null;
+            }
+            int mid = (st + end)/2;
+            Node root = new Node(val[mid]);
+
+            root.left = createBST(val, st, mid-1);
+            root.right = createBST(val, mid+1, end);
+
+            return root;
+        }
+
     public static void main(String[] args) {
-        int val[] = {5,1,3,4,2,7,10,9,8,11};
+        int val[] = {3,5,6,8,10,11,12};
         Node root = null;
 
         for(int i = 0; i<val.length; i++){
             root = insert(root, val[i]);
         }
 
+        root = createBST(val, 0, val.length-1);
         // inorder(root);
         // System.out.println();
-        // // levelOrder(root);
+        levelOrder(root);
 
         // // int key = 15;        
         // // System.out.println(isExist(root, key));
@@ -196,7 +210,7 @@ public class BTS{
 
         // printInRange(root, 3, 9);
         // root = Mirror(root);
-        preorder(root);
+        // preorder(root);
 
         
     }
