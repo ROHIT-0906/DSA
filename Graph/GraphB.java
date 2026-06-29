@@ -5,12 +5,13 @@ public class GraphB {
     public static class Edge{
         int src;
         int dest;
+        int wt;
         
 
-        public Edge(int s, int d){
+        public Edge(int s, int d,int w){
             this.src = s;
             this.dest = d;
-           
+            this.wt = w;
         }
     }
 
@@ -255,36 +256,91 @@ public class GraphB {
 
     }
 
+    public static class Pair implements Comparable<Pair>{
+         int n;
+         int path;
+
+         public Pair(int n, int path){
+            this.n = n;
+            this.path = path;
+         }
+
+         @Override
+         public int compareTo(Pair p2){
+            return this.path - p2.path;
+         }
+
+    }
+
+    public static void dijkstra(ArrayList<Edge>[] graph, int src){
+        int dis[] = new int[graph.length];
+        for(int i=0; i<graph.length; i++){
+            if(i != src){
+                dis[i] = Integer.MAX_VALUE;
+            }
+        }
+
+        boolean vis[] = new boolean[graph.length];
+        PriorityQueue<Pair> pq = new PriorityQueue<>();
+        pq.add(new Pair(src, 0));
+        //loop
+
+        while(!pq.isEmpty()){
+            Pair curr = pq.remove();
+            if(!vis[curr.n]){
+                vis[curr.n] = true;
+                //neighbours
+                for(int i=0; i<graph[curr.n].size(); i++){
+                    Edge e = graph[curr.n].get(i);
+                    int u = e.src;
+                    int v = e.dest;
+                    int wt = e.wt;
+
+                    if(dis[u]+wt < dis[v]){
+                        dis[v] = dis[u] + wt; 
+                        pq.add(new Pair(v, dis[v]));
+                    }
+                }
+            }
+
+        }
+
+        for(int i=0; i<dis.length; i++){
+            System.out.print(dis[i]+" ");
+        }
+
+    }
+
     public static void main(String[] args) {
-        int V = 6;
+        int V = 5;
         ArrayList<Edge>[] graph = new ArrayList[V];
 
         for(int i=0; i<V; i++){
             graph[i] = new ArrayList<>();
         }
 
-        // graph[0].add(new Edge(0, 1));
-        graph[0].add(new Edge(0, 3));
-        // graph[0].add(new Edge(0, 2));
+        graph[0].add(new Edge(0, 1,2));
+        // graph[0].add(new Edge(0, 3));
+        graph[0].add(new Edge(0, 2,4));
         // graph[0].add(new Edge(0, 3));
 
-        // graph[1].add(new Edge(1, 2));
-        // graph[1].add(new Edge(1, 3));
+        graph[1].add(new Edge(1, 2,-4));
+        // graph[1].add(new Edge(1, 3,7));
     
 
-        graph[2].add(new Edge(2, 3));
+        graph[2].add(new Edge(2,3, 2));
         // graph[2].add(new Edge(2, 4));
     
 
         // graph[3].add(new Edge(3, 0));
-        graph[3].add(new Edge(3, 1));
+        graph[3].add(new Edge(3, 4,4));
 
-        graph[4].add(new Edge(4, 0));
-        graph[4].add(new Edge(4, 1));
+        graph[4].add(new Edge(4, 1,-1));
+        // graph[4].add(new Edge(4, 5,5));
 
 
-        graph[5].add(new Edge(5, 0));
-        graph[5].add(new Edge(5, 2));
+        // graph[5].add(new Edge(5, 0));
+        // graph[5].add(new Edge(5, 2));
 
         // for(int i=0; i<graph[2].size(); i++){
         //     Edge e = graph[2].get(i);
@@ -303,7 +359,9 @@ public class GraphB {
 
         // topSort(graph);
 
-        findAllPath(graph, 5, 1, "");
+        // findAllPath(graph, 5, 1, "");
+
+        dijkstra(graph, 0);
 
     }
 
