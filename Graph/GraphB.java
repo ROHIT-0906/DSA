@@ -378,37 +378,99 @@ public class GraphB {
         System.out.println("Final cost of MST: "+finalCost);
     }
 
+    public static class Kstops implements Comparable<Kstops>{
+        int n;
+        int path;
+        int stops;
+
+        public Kstops(int n, int path,int stops){
+            this.n = n;
+            this.path = path;
+            this.stops = stops;
+        }
+
+        @Override
+        public int compareTo(Kstops p2){
+            return this.stops - p2.stops;
+        }
+
+    }
+
+    public static int cheapestFlight(ArrayList<Edge>[] graph, int src, int dest,int k){
+        int[] dist = new int[k+2];
+        for(int i=0; i<dist.length; i++){
+            if(i != src){
+                dist[i] = Integer.MAX_VALUE;
+            }
+        }
+        PriorityQueue<Kstops> pq = new PriorityQueue<>();
+        boolean vis[] = new boolean[k+2];
+        pq.add(new Kstops(src, 0,0));
+
+      while(!pq.isEmpty()){
+         Kstops curr = pq.remove();
+         if (curr.stops > k) {
+        break;
+    }
+       
+             for(int j=0; j<graph[curr.n].size(); j++){
+            Edge e = graph[curr.n].get(j);
+            int u = e.src;
+            int v = e.dest;
+            int wt = e.wt;
+            if(dist[u] + wt < dist[v] && curr.stops <= k){
+                dist[v] = dist[u] + wt;
+                pq.add(new Kstops(e.dest, dist[v], curr.stops +1));
+            }
+        }
+        
+       
+       
+       }
+
+       if(dist[dest] == Integer.MAX_VALUE){
+        return -1;
+       }else{
+
+return dist[dest];
+       }
+
+       
+
+    }
+
 
     public static void main(String[] args) {
-        int V = 4;
+        int V = 3;
         ArrayList<Edge>[] graph = new ArrayList[V];
 
         for(int i=0; i<V; i++){
             graph[i] = new ArrayList<>();
         }
 
-        graph[0].add(new Edge(0, 1,10));
-        graph[0].add(new Edge(0, 2,15));
-        graph[0].add(new Edge(0, 3,30));
+        graph[0].add(new Edge(0, 1,100));
+        graph[0].add(new Edge(0, 2,500));
+        // graph[0].add(new Edge(0, 2,15));
+        // graph[0].add(new Edge(0, 3,30));
         // graph[0].add(new Edge(0, 3));
         // graph[0].add(new Edge(0, 2,4));
         // graph[0].add(new Edge(0, 3));
 
-        graph[1].add(new Edge(1, 0,10));
-        graph[1].add(new Edge(1, 3,40));
+        graph[1].add(new Edge(1, 2,100));
+        // graph[1].add(new Edge(1, 3,40));
         // graph[1].add(new Edge(1, 2,-4));
         // graph[1].add(new Edge(1, 3,7));
     
 
-        graph[2].add(new Edge(2,0, 15));
-        graph[2].add(new Edge(2,3, 50));
+        // graph[2].add(new Edge(2,0, 15));
+        // graph[2].add(new Edge(2,3, 50));
         // graph[2].add(new Edge(2,3, 2));
         // graph[2].add(new Edge(2, 4));
     
 
-        graph[3].add(new Edge(3, 0,30));
-        graph[3].add(new Edge(3, 1,40));
-        graph[3].add(new Edge(3, 2,50));
+        // graph[3].add(new Edge(3, 0,30));
+        // graph[3].add(new Edge(3, 1,40));
+        // graph[3].add(new Edge(3, 2,50));
         // graph[3].add(new Edge(3, 4,4));
 
         // graph[4].add(new Edge(4, 1,-1));
@@ -441,7 +503,8 @@ public class GraphB {
 
         // bellmanFord(graph, 0);
 
-        primsAlgo(graph);
+        // primsAlgo(graph);
+        System.out.println(cheapestFlight(graph, 0, 2, 1));
 
     }
 
